@@ -1,4 +1,5 @@
 import { DataSourceOptions } from 'typeorm';
+import { TagEntity } from '@app/modules/tag/tag.entity';
 
 const config: DataSourceOptions = {
   type: 'postgres',
@@ -7,10 +8,11 @@ const config: DataSourceOptions = {
   username: 'easylogin',
   password: '123456',
   database: 'sharingblog',
-  // dirname sẽ trong src
-  entities: [__dirname + '/../**/*.entity{ .js,.ts}'],
-  synchronize: false,
-  migrations: [__dirname + '/migrations/**/*.{js,ts}'],
+  entities: ['src/modules/**/*.entity.ts', 'src/**/*.entity.{ts,js}'],
+  migrations: [__dirname + '/migrations/**/*.{ts,js}'],
+  synchronize: true,
+  // dropSchema: false,
+  // logging: true,
 };
 
 export default config;
