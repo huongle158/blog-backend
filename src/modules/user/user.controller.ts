@@ -53,6 +53,8 @@ export class UserController {
     // @Req() request: ExpressRequest,
     @User() user: UserEntity,
   ): Promise<UserResponseInterface> {
+    const linkImg: string = BASE_URL_AVA + user.avatar;
+    user.avatar = linkImg;
     return this.userService.buildUserResponse(user);
   }
 
@@ -67,6 +69,8 @@ export class UserController {
       currentUserId,
       updateUserDto,
     );
+    const linkImg: string = BASE_URL_AVA + user.avatar;
+    user.avatar = linkImg;
     return this.userService.buildUserResponse(user);
   }
 
