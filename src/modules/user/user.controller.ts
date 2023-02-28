@@ -75,13 +75,7 @@ export class UserController {
   @UsePipes(new ValidationPipe())
   @UseInterceptors(
     FileInterceptor('avatar', {
-      storage: multer.diskStorage({
-        destination: './public/avatars',
-        filename: (_, file, cb) => {
-          const filename = `${Date.now()}_${file.originalname}`;
-          cb(null, filename);
-        },
-      }),
+      storage: multer.diskStorage(diskStoConfig),
     }),
   )
   async updateAvatar(
