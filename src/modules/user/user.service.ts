@@ -54,7 +54,6 @@ export class UserService {
         'email',
         'bio',
         'avatar',
-        'cover',
         'fullname',
       ],
     });
@@ -86,6 +85,12 @@ export class UserService {
     const user = await this.findById(userId);
     Object.assign(user, updatedUserDto);
 
+    return await this.userRepository.save(user);
+  }
+
+  async updateAvatar(userId: number, filename: string): Promise<UserEntity> {
+    const user = await this.findById(userId);
+    user.avatar = filename;
     return await this.userRepository.save(user);
   }
 

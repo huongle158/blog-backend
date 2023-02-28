@@ -31,12 +31,6 @@ export class UserEntity {
   })
   avatar: string;
 
-  @Column({
-    default:
-      'https://khoinguonsangtao.vn/wp-content/uploads/2021/09/anh-bia-facebook-cute-nhat-780x289.jpg',
-  })
-  cover: string;
-
   // Ko trả về trường này trong mọi response
   @Column({ select: false })
   password: string;

@@ -10,7 +10,7 @@ export class UpdateUserDto {
 
   readonly fullname: string;
 
-  readonly avatar: string;
+  // readonly avatar: string;
 
-  readonly cover: string;
+  // readonly cover: string;
 }
