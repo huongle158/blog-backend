@@ -44,6 +44,8 @@ export class UserController {
     @Body('user') loginDto: LoginUserDto,
   ): Promise<UserResponseInterface> {
     const user = await this.userService.login(loginDto);
+    const linkImg: string = BASE_URL_AVA + user.avatar;
+    user.avatar = linkImg;
     return this.userService.buildUserResponse(user);
   }
 
