@@ -88,6 +88,12 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
+  async updateAvatar(userId: number, filename: string): Promise<UserEntity> {
+    const user = await this.findById(userId);
+    user.avatar = filename;
+    return await this.userRepository.save(user);
+  }
+
   generateJwt(user: UserEntity): string {
     return sign(
       {
