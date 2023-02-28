@@ -54,7 +54,6 @@ export class UserService {
         'email',
         'bio',
         'avatar',
-        'cover',
         'fullname',
       ],
     });
