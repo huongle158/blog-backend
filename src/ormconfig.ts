@@ -8,11 +8,19 @@ const config: DataSourceOptions = {
   username: 'easylogin',
   password: '123456',
   database: 'sharingblog',
-  entities: ['src/modules/**/*.entity.ts', 'src/**/*.entity.{ts,js}'],
-  migrations: [__dirname + '/migrations/**/*.{ts,js}'],
+  entities: [
+    'src/modules/**/*.entity.ts',
+    'src/**/*.entity.{ts,js}',
+    'dist/modules/**/*.entity.js',
+  ],
+  migrations: [
+    __dirname + '/migrations/**/*.{ts,js}',
+    'dist/{migrations,seeds}/*.js',
+  ],
   synchronize: true,
+  logging: true,
+  migrationsRun: true,
   // dropSchema: false,
-  // logging: true,
 };
 
 export default config;

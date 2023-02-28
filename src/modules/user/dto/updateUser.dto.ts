@@ -8,6 +8,8 @@ export class UpdateUserDto {
 
   readonly bio: string;
 
+  readonly fullname: string;
+
   readonly avatar: string;
 
   readonly cover: string;

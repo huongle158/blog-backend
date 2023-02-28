@@ -39,7 +39,7 @@ export class UserController {
     return this.userService.buildUserResponse(user);
   }
 
-  @Get('user')
+  @Get('users')
   @UseGuards(AuthGuard)
   async currentUser(
     // @Req() request: ExpressRequest,
@@ -48,8 +48,9 @@ export class UserController {
     return this.userService.buildUserResponse(user);
   }
 
-  @Put('user')
+  @Put('users')
   @UseGuards(AuthGuard)
+  @UsePipes(new ValidationPipe())
   async updateCurrentUser(
     @User('id') currentUserId: number,
     @Body('user') updateUserDto: UpdateUserDto,

@@ -47,7 +47,16 @@ export class UserService {
   async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
       where: { email: loginUserDto.email },
-      select: ['id', 'username', 'password', 'email', 'bio', 'avatar', 'cover'],
+      select: [
+        'id',
+        'username',
+        'password',
+        'email',
+        'bio',
+        'avatar',
+        'cover',
+        'fullname',
+      ],
     });
     if (!user) {
       throw new HttpException(

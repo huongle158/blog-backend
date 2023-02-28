@@ -23,6 +23,9 @@ export class UserEntity {
   @Column({ default: '' })
   bio: string;
 
+  @Column({ default: '' })
+  fullname: string;
+
   @Column({
     default: '',
   })
