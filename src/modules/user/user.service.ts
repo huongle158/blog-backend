@@ -111,7 +111,6 @@ export class UserService {
 
     try {
       await promisify(unlink)(filePath);
-      console.log(`Deleted old avatar file: ${filePath}`);
     } catch (err) {
       console.error(`Error deleting avatar file: ${err}`);
     }
