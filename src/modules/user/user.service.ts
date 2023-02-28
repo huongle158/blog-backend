@@ -3,6 +3,9 @@ import { Repository } from 'typeorm';
 import { sign } from 'jsonwebtoken';
 import { compare } from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { join } from 'path';
+import { unlink } from 'fs';
+import { promisify } from 'util';
 
 import { UserEntity } from './user.entity';
 import { JWT_SECRET } from '@app/config';
@@ -90,8 +93,28 @@ export class UserService {
 
   async updateAvatar(userId: number, filename: string): Promise<UserEntity> {
     const user = await this.findById(userId);
+    if (user.avatar) {
+      const oldFile: string = user.avatar;
+      await this.deleteOldAvatar(oldFile);
+    }
     user.avatar = filename;
     return await this.userRepository.save(user);
+  }
+
+  async deleteOldAvatar(filename: string) {
+    const filePath: string = join(
+      process.cwd(),
+      'public',
+      'avatars',
+      `${filename}`,
+    );
+
+    try {
+      await promisify(unlink)(filePath);
+      console.log(`Deleted old avatar file: ${filePath}`);
+    } catch (err) {
+      console.error(`Error deleting avatar file: ${err}`);
+    }
   }
 
   generateJwt(user: UserEntity): string {
