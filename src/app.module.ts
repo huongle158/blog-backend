@@ -9,6 +9,7 @@ import ormconfig from '@app/ormconfig';
 import { TagModule } from '@app/modules/tag/tag.module';
 import { UserModule } from '@app/modules/user/user.module';
 import { AuthMiddleware } from '@app/modules/user/middlewares/auth.middleware';
+import { ArticleModule } from '@app/modules/article/article.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AuthMiddleware } from '@app/modules/user/middlewares/auth.middleware';
     }),
     TagModule,
     UserModule,
+    ArticleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -28,7 +28,7 @@ import { BASE_URL_AVA } from '@app/config/common';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
+  @Post('register')
   @UsePipes(new ValidationPipe())
   async createUser(
     @Body('user') createUserDto: CreateUserDto,
