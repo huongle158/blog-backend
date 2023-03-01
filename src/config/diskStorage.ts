@@ -5,3 +5,11 @@ export const diskStoConfig = {
     cb(null, filename);
   },
 };
+
+export const diskBannerConfig = {
+  destination: './public/banners',
+  filename: (_, file, cb) => {
+    const filename = `bn_${Date.now()}_${file.originalname}`;
+    cb(null, filename);
+  },
+};

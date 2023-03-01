@@ -18,6 +18,10 @@ import { ArticleModule } from '@app/modules/article/article.module';
       rootPath: join(__dirname, '../', 'public', 'avatars'),
       serveRoot: '/avatars',
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../', 'public', 'banners'),
+      serveRoot: '/banners',
+    }),
     TagModule,
     UserModule,
     ArticleModule,

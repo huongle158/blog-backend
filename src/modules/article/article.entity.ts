@@ -5,6 +5,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Type, Transform } from 'class-transformer';
+
 import { UserEntity } from '../user/user.entity';
 
 @Entity({ name: 'articles' })
@@ -22,7 +24,10 @@ export class ArticleEntity {
   description: string;
 
   @Column({ default: '' })
-  body: string;
+  content: string;
+
+  @Column({ default: '' })
+  banner: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
@@ -30,6 +35,17 @@ export class ArticleEntity {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
+  // @Column('simple-array')
+  // tagList: string[];
+
+  // @Transform(({ value }) => {
+  //   try {
+  //     return JSON.parse(value);
+  //   } catch {
+  //     return value;
+  //   }
+  // })
+  // @Type(() => String)
   @Column('simple-array')
   tagList: string[];
 
