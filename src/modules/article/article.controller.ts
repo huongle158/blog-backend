@@ -25,6 +25,7 @@ import { CreateArticleDto } from './dto/createArticle.dto';
 import { ArticlesResponseInterface } from './types/articlesResponse.interface';
 import { BASE_URL_BANNER } from '@app/config/common';
 import { ArticleResponseInterface } from './types/articleResponse.interface';
+import { UpdateArticleDto } from './dto/updateArticle.dto';
 
 @Controller('articles')
 export class ArticleController {
@@ -47,6 +48,46 @@ export class ArticleController {
       currentUser,
       createArticleDto,
       file.filename,
+    );
+    const linkImg: string = BASE_URL_BANNER + article.banner;
+    article.banner = linkImg;
+
+    return this.articlesService.buildArticleResponse(article);
+  }
+
+  @Get(':slug')
+  async getBySlug(
+    @Param('slug') slug: string,
+  ): Promise<ArticleResponseInterface> {
+    const article = await this.articlesService.findBySlug(slug);
+
+    const linkImg: string = BASE_URL_BANNER + article.banner;
+    article.banner = linkImg;
+
+    return this.articlesService.buildArticleResponse(article);
+  }
+
+  @Put(':slug')
+  @UseGuards(AuthGuard)
+  @UsePipes(new ValidationPipe())
+  @UseInterceptors(
+    FileInterceptor('banner', {
+      storage: multer.diskStorage(diskBannerConfig),
+    }),
+  )
+  async updateArticle(
+    @User('id') currentUserId: number,
+    @Param('slug') slug: string,
+    @Body() updateArticleDto: UpdateArticleDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const bannerPath = !!file ? file.filename : null;
+
+    const article = await this.articlesService.updateArticle(
+      slug,
+      updateArticleDto,
+      currentUserId,
+      bannerPath,
     );
     const linkImg: string = BASE_URL_BANNER + article.banner;
     article.banner = linkImg;

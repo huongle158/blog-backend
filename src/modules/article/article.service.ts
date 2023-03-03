@@ -10,6 +10,7 @@ import { UserEntity } from '../user/user.entity';
 import { ArticleEntity } from './article.entity';
 import { CreateArticleDto } from './dto/createArticle.dto';
 import { ArticleResponseInterface } from './types/articleResponse.interface';
+import { UpdateArticleDto } from './dto/updateArticle.dto';
 
 @Injectable()
 export class ArticlesService {
@@ -55,6 +56,34 @@ export class ArticlesService {
       );
     }
     return await this.articleRepository.delete({ slug });
+  }
+
+  async updateArticle(
+    slug: string,
+    updateArticleDto: UpdateArticleDto,
+    currentUserId: number,
+    bannerFile?: string,
+  ): Promise<ArticleEntity> {
+    const article = await this.findBySlug(slug);
+
+    if (!article) {
+      throw new HttpException('Article does not exist', HttpStatus.NOT_FOUND);
+    }
+    if (article.author.id !== currentUserId) {
+      throw new HttpException(
+        'You are not an author of article',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+    Object.assign(article, updateArticleDto);
+
+    if (bannerFile) {
+      const oldFile: string = article.banner;
+      await this.deleteOldBanner(oldFile);
+      article.banner = bannerFile;
+    }
+
+    return this.articleRepository.save(article);
   }
 
   private getSlug(title: string): string {
