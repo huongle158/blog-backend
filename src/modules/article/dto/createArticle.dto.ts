@@ -6,9 +6,6 @@ export class CreateArticleDto {
   readonly title: string;
 
   @IsNotEmpty()
-  readonly description: string;
-
-  @IsNotEmpty()
   readonly content: string;
 
   // File img để hiện
