@@ -1,3 +1,4 @@
+import { BASE_URL_BANNER } from './../../config/common';
 import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import slugify from 'slugify';
@@ -11,6 +12,7 @@ import { ArticleEntity } from './article.entity';
 import { CreateArticleDto } from './dto/createArticle.dto';
 import { ArticleResponseInterface } from './types/articleResponse.interface';
 import { UpdateArticleDto } from './dto/updateArticle.dto';
+import { ArticlesResponseInterface } from './types/articlesResponse.interface';
 
 @Injectable()
 export class ArticlesService {
@@ -22,6 +24,58 @@ export class ArticlesService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
   ) {}
+
+  async findAll(
+    currentUserId: number,
+    query: any,
+  ): Promise<ArticlesResponseInterface> {
+    // Typeorm query builder
+    // Tự thêm truy vấn articles vì cta tự tạo query
+    // alias của article entity là articles và alias bảng liên kết thông qua trường author có alias là author => ngầm hiểu user entity
+    const queryBuilder = this.dataSource
+      .getRepository(ArticleEntity)
+      .createQueryBuilder('articles')
+      .leftJoinAndSelect('articles.author', 'author');
+
+    if (query.tag) {
+      queryBuilder.andWhere('articles.tagList LIKE :tag', {
+        tag: `%${query.tag}`,
+      });
+    }
+    if (query.author) {
+      const author = await this.userRepository.findOne({
+        where: { username: query.author },
+      });
+      queryBuilder.andWhere('articles.authorId = :id', { id: author.id });
+    }
+    // Favorited còn sót
+    // TODO
+
+    queryBuilder.orderBy('articles.createdAt', 'DESC');
+
+    const articlesCount = await queryBuilder.getCount();
+
+    if (query.limit) {
+      queryBuilder.limit(query.limit);
+    }
+    // SỐ bản ghi bị bỏ qua từ dầu, ví dụ nếu muốn lấy 21 thì offset=20
+    if (query.offset) {
+      queryBuilder.offset(query.offset);
+    }
+
+    // TODO bo sung favorites
+    const articles = await queryBuilder.getMany();
+    const transformedArticles = articles.map((article) => {
+      return {
+        ...article,
+        banner: 'abc',
+      };
+    });
+    const configBannerFile = articles.map((article) => {
+      return { ...article, banner: BASE_URL_BANNER + article.banner };
+    });
+    return { articles: configBannerFile, articlesCount };
+  }
 
   async createArticle(
     currentUser: UserEntity,
