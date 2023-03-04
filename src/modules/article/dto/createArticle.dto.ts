@@ -28,6 +28,6 @@ export class CreateArticleDto {
   // readonly tagList?: string[];
 
   @IsOptional()
-  @IsArray()
+  // @IsArray()
   readonly tagList?: string[];
 }

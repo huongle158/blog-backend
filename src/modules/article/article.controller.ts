@@ -31,6 +31,14 @@ import { UpdateArticleDto } from './dto/updateArticle.dto';
 export class ArticleController {
   constructor(private readonly articlesService: ArticlesService) {}
 
+  @Get()
+  async findAll(
+    @User('id') currentUserId: number,
+    @Query() query: any,
+  ): Promise<ArticlesResponseInterface> {
+    return await this.articlesService.findAll(currentUserId, query);
+  }
+
   @Post()
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
@@ -56,6 +64,7 @@ export class ArticleController {
   }
 
   @Get(':slug')
+  @UseGuards(AuthGuard)
   async getBySlug(
     @Param('slug') slug: string,
   ): Promise<ArticleResponseInterface> {
