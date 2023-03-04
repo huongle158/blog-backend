@@ -13,6 +13,7 @@ import { UserResponseInterface } from './types/userResponse.interface';
 import { CreateUserDto } from './dto/createUser.dto';
 import { LoginUserDto } from './dto/loginUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
+import { BASE_URL_AVA } from '@app/config/common';
 
 @Injectable()
 export class UserService {
@@ -86,6 +87,7 @@ export class UserService {
     updatedUserDto: UpdateUserDto,
   ): Promise<UserEntity> {
     const user = await this.findById(userId);
+    // const { avatar, ...updatedUserDtoWithoutAvatar } = updatedUserDto;
     Object.assign(user, updatedUserDto);
 
     return await this.userRepository.save(user);
@@ -131,6 +133,7 @@ export class UserService {
     return {
       user: {
         ...user,
+        avatar: BASE_URL_AVA + user.avatar,
         token: this.generateJwt(user),
       },
     };
