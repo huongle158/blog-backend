@@ -39,7 +39,7 @@ export class ArticlesService {
 
     if (query.tag) {
       queryBuilder.andWhere('articles.tagList LIKE :tag', {
-        tag: `%${query.tag}`,
+        tag: `%${query.tag}%`,
       });
     }
     if (query.author) {
