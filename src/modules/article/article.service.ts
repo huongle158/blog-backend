@@ -11,8 +11,8 @@ import { UserEntity } from '../user/user.entity';
 import { ArticleEntity } from './article.entity';
 import { CreateArticleDto } from './dto/createArticle.dto';
 import { ArticleResponseInterface } from './types/articleResponse.interface';
-import { UpdateArticleDto } from './dto/updateArticle.dto';
 import { ArticlesResponseInterface } from './types/articlesResponse.interface';
+import { UpdateArticleDto } from './dto/updateArticle.dto';
 
 @Injectable()
 export class ArticlesService {
