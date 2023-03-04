@@ -44,8 +44,8 @@ export class UserController {
     @Body('user') loginDto: LoginUserDto,
   ): Promise<UserResponseInterface> {
     const user = await this.userService.login(loginDto);
-    const linkImg: string = BASE_URL_AVA + user.avatar;
-    user.avatar = linkImg;
+    // const linkImg: string = BASE_URL_AVA + user.avatar;
+    // user.avatar = linkImg;
     return this.userService.buildUserResponse(user);
   }
 
@@ -55,8 +55,9 @@ export class UserController {
     // @Req() request: ExpressRequest,
     @User() user: UserEntity,
   ): Promise<UserResponseInterface> {
-    const linkImg: string = BASE_URL_AVA + user.avatar;
-    user.avatar = linkImg;
+    console.log("This's ~ user", user);
+    // const linkImg: string = BASE_URL_AVA + user.avatar;
+    // user.avatar = linkImg;
     return this.userService.buildUserResponse(user);
   }
 
@@ -67,12 +68,13 @@ export class UserController {
     @User('id') currentUserId: number,
     @Body('user') updateUserDto: UpdateUserDto,
   ): Promise<UserResponseInterface> {
+    console.log("This's ~ updateUserDto update", updateUserDto);
     const user = await this.userService.updateUser(
       currentUserId,
       updateUserDto,
     );
-    const linkImg: string = BASE_URL_AVA + user.avatar;
-    user.avatar = linkImg;
+    console.log("This's ~ user update", user);
+
     return this.userService.buildUserResponse(user);
   }
 
@@ -92,8 +94,9 @@ export class UserController {
       currentUserId,
       file.filename,
     );
-    const linkImg: string = BASE_URL_AVA + user.avatar;
-    user.avatar = linkImg;
+    console.log("This's ~ user upload", user);
+    // const linkImg: string = BASE_URL_AVA + user.avatar;
+    // user.avatar = linkImg;
     return this.userService.buildUserResponse(user);
   }
 }
