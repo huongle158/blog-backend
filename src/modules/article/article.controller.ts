@@ -76,7 +76,7 @@ export class ArticleController {
     return this.articlesService.buildArticleResponse(article);
   }
 
-  @Put(':slug')
+  @Put('update/:slug')
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
   @UseInterceptors(
