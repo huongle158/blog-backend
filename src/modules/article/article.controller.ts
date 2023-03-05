@@ -32,6 +32,7 @@ export class ArticleController {
   constructor(private readonly articlesService: ArticlesService) {}
 
   @Get()
+  @UseGuards(AuthGuard)
   async findAll(
     @User('id') currentUserId: number,
     @Query() query: any,

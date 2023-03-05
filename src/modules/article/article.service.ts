@@ -1,4 +1,3 @@
-import { BASE_URL_BANNER } from './../../config/common';
 import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import slugify from 'slugify';
@@ -8,6 +7,7 @@ import { unlink } from 'fs';
 import { promisify } from 'util';
 
 import { UserEntity } from '../user/user.entity';
+import { BASE_URL_BANNER, BASE_URL_AVA } from './../../config/common';
 import { ArticleEntity } from './article.entity';
 import { CreateArticleDto } from './dto/createArticle.dto';
 import { ArticleResponseInterface } from './types/articleResponse.interface';
@@ -28,15 +28,16 @@ export class ArticlesService {
   async findAll(
     currentUserId: number,
     query: any,
-  ): Promise<ArticlesResponseInterface> {
+  ): Promise<ArticlesResponseInterface | any> {
     // Typeorm query builder
     // Tự thêm truy vấn articles vì cta tự tạo query
     // alias của article entity là articles và alias bảng liên kết thông qua trường author có alias là author => ngầm hiểu user entity
     const queryBuilder = this.dataSource
       .getRepository(ArticleEntity)
       .createQueryBuilder('articles')
-      .leftJoinAndSelect('articles.author', 'author');
-
+      .leftJoinAndSelect('articles.author', 'author')
+      .addSelect(['author.avatar']);
+    // .addSelect(`CONCAT('${BASE_URL_AVA}', author.avatar)`, 'avatar');
     if (query.tag) {
       queryBuilder.andWhere('articles.tagList LIKE :tag', {
         tag: `%${query.tag}%`,
@@ -65,16 +66,21 @@ export class ArticlesService {
 
     // TODO bo sung favorites
     const articles = await queryBuilder.getMany();
-    const transformedArticles = articles.map((article) => {
+    const configBannerFile = articles.map((article) => {
+      const updatedAuthor = {
+        ...article.author,
+        avatar: BASE_URL_AVA + article.author.avatar,
+      };
       return {
         ...article,
-        banner: 'abc',
+        author: updatedAuthor,
+        banner: BASE_URL_BANNER + article.banner,
       };
     });
-    const configBannerFile = articles.map((article) => {
-      return { ...article, banner: BASE_URL_BANNER + article.banner };
-    });
-    return { articles: configBannerFile, articlesCount };
+    return {
+      articles: configBannerFile,
+      articlesCount,
+    };
   }
 
   async createArticle(
