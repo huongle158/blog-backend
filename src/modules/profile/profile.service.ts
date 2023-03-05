@@ -27,12 +27,13 @@ export class ProfileService {
       throw new HttpException('Profile does not exist', HttpStatus.NOT_FOUND);
     }
 
-    const follow = await this.followRepository.findOne({
+    const followStatus = await this.followRepository.findOne({
       where: {
-        followerId: currentUserId,
+        followerId: currentUserId || 0,
         followingId: user.id,
       },
     });
+    console.log("This's ~ followStatus", followStatus);
 
     //  Người đang follow user này
     const listFollowerCheck = await this.followRepository.find({
@@ -55,7 +56,8 @@ export class ProfileService {
       .getMany();
     return {
       ...user,
-      following: Boolean(follow),
+      //   following: Boolean(followStatus),
+      following: followStatus !== null ? true : false,
       listFollower: followerUsers,
       listFollowing: followingUsers,
     };

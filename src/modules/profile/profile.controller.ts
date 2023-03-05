@@ -19,13 +19,13 @@ import { ProfileResponseInterface } from './types/profileResponse.interface';
 @Controller('profiles')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
-  // TODO thiếu phần getaLLuSER CHƯA FOLLOW, FOLLOW ĐỂ XEM BÀI VIẾT
 
   @Get(':username')
   async getProfile(
     @User('id') currentUserId: number,
     @Param('username') profileUsername: string,
   ): Promise<ProfileResponseInterface> {
+    console.log("This's ~ currentUserId", currentUserId);
     const profile = await this.profileService.getProfile(
       currentUserId,
       profileUsername,
