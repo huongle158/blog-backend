@@ -39,8 +39,9 @@ export class ArticlesService {
       .addSelect(['author.avatar']);
     // .addSelect(`CONCAT('${BASE_URL_AVA}', author.avatar)`, 'avatar');
     if (query.tag) {
-      queryBuilder.andWhere('articles.tagList LIKE :tag', {
-        tag: `%${query.tag}%`,
+      const tagLowerCase = query.tag.toLowerCase();
+      queryBuilder.andWhere('LOWER(articles.tagList) LIKE :tag', {
+        tag: `%${tagLowerCase}%`,
       });
     }
     if (query.author) {
