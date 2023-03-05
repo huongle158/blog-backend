@@ -10,6 +10,7 @@ import { TagModule } from '@app/modules/tag/tag.module';
 import { UserModule } from '@app/modules/user/user.module';
 import { AuthMiddleware } from '@app/modules/user/middlewares/auth.middleware';
 import { ArticleModule } from '@app/modules/article/article.module';
+import { ProfileModule } from './modules/profile/profile.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ArticleModule } from '@app/modules/article/article.module';
     TagModule,
     UserModule,
     ArticleModule,
+    ProfileModule,
   ],
   controllers: [AppController],
   providers: [AppService],
