@@ -1,6 +1,7 @@
 import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, DeleteResult, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
+// import { DataSource, DeleteResult, Repository } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { FollowEntity } from './follow.entity';
 import { ProfileType } from './types/profile.type';
