@@ -32,7 +32,7 @@ export class ProfileController {
     return this.profileService.buildProfileesponse(profile);
   }
 
-  @Get('notfollowing/hm')
+  @Get('notfollowing/list')
   @UseGuards(AuthGuard)
   async getPeoPleNotFollow(@User('id') currentUserId: number): Promise<any> {
     const profile = await this.profileService.getPeopleNotFollow(currentUserId);
