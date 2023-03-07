@@ -162,9 +162,12 @@ export class ArticlesService {
   }
 
   async findBySlug(slug: string): Promise<ArticleEntity> {
-    return await this.articleRepository.findOne({
+    const article = await this.articleRepository.findOne({
       where: { slug },
     });
+    const configAva = BASE_URL_AVA + article.author.avatar;
+    article.author.avatar = configAva;
+    return article;
   }
 
   async deleteOldBanner(filename: string) {
