@@ -25,12 +25,19 @@ export class ProfileController {
     @User('id') currentUserId: number,
     @Param('username') profileUsername: string,
   ): Promise<ProfileResponseInterface> {
-    console.log("This's ~ currentUserId", currentUserId);
     const profile = await this.profileService.getProfile(
       currentUserId,
       profileUsername,
     );
     return this.profileService.buildProfileesponse(profile);
+  }
+
+  @Get('notfollowing/hm')
+  @UseGuards(AuthGuard)
+  async getPeoPleNotFollow(@User('id') currentUserId: number): Promise<any> {
+    const profile = await this.profileService.getPeopleNotFollow(currentUserId);
+
+    return profile;
   }
 
   @Post('follow/:username')

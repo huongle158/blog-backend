@@ -1,6 +1,8 @@
+import { BASE_URL_AVA } from '@app/config/common';
 import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { find } from 'rxjs';
+import { Repository, Not } from 'typeorm';
 // import { DataSource, DeleteResult, Repository } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { FollowEntity } from './follow.entity';
@@ -33,7 +35,7 @@ export class ProfileService {
         followingId: user.id,
       },
     });
-    console.log("This's ~ followStatus", followStatus);
+    // console.log("This's ~ followStatus", followStatus);
 
     //  Người đang follow user này
     const listFollowerCheck = await this.followRepository.find({
@@ -44,6 +46,9 @@ export class ProfileService {
       .createQueryBuilder('user')
       .whereInIds(userIds)
       .getMany();
+    const followerUsersConfigAva = followerUsers.map((user) => {
+      return { ...user, avatar: BASE_URL_AVA + user.avatar };
+    });
 
     //   List Người này follow
     const listFollowingCheck = await this.followRepository.find({
@@ -54,13 +59,37 @@ export class ProfileService {
       .createQueryBuilder('user')
       .whereInIds(followingIds)
       .getMany();
+    const followingUsersConfigAva = followingUsers.map((user) => {
+      return { ...user, avatar: BASE_URL_AVA + user.avatar };
+    });
     return {
       ...user,
       //   following: Boolean(followStatus),
       following: followStatus !== null ? true : false,
-      listFollower: followerUsers,
-      listFollowing: followingUsers,
+      listFollower: followerUsersConfigAva,
+      listFollowing: followingUsersConfigAva,
     };
+  }
+
+  async getPeopleNotFollow(currentUserId: number): Promise<any> {
+    const listFollowingCheck = await this.followRepository.find({
+      where: {
+        followerId: currentUserId,
+      },
+    });
+    const followingIds = listFollowingCheck.map((follow) => follow.followingId);
+
+    const notFollowingUsers = await this.userRepository
+      .createQueryBuilder('users')
+      .where('users.id != :currentUserId', { currentUserId })
+      .andWhere('users.id NOT IN (:...followingIds)', { followingIds })
+      .getMany();
+
+    const notFollowingUsersConfigAva = notFollowingUsers.map((user) => {
+      return { ...user, avatar: BASE_URL_AVA + user.avatar };
+    });
+
+    return notFollowingUsersConfigAva;
   }
 
   async followProfile(
