@@ -88,6 +88,29 @@ export class UserService {
   ): Promise<UserEntity> {
     const user = await this.findById(userId);
     // const { avatar, ...updatedUserDtoWithoutAvatar } = updatedUserDto;
+    if (updatedUserDto.email) {
+      const userByEmail = await this.userRepository.findOne({
+        where: { email: updatedUserDto.email },
+      });
+      if (userByEmail) {
+        throw new HttpException(
+          'Email are taken',
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
+      }
+    }
+    if (updatedUserDto.username) {
+      const userByUsername = await this.userRepository.findOne({
+        where: { username: updatedUserDto.username },
+      });
+      if (userByUsername) {
+        throw new HttpException(
+          'Username are taken',
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
+      }
+    }
+
     Object.assign(user, updatedUserDto);
 
     return await this.userRepository.save(user);
