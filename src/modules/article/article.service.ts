@@ -44,6 +44,12 @@ export class ArticlesService {
         tag: `%${tagLowerCase}%`,
       });
     }
+    if (query.title) {
+      const titleLowerCase = query.title.toLowerCase();
+      queryBuilder.andWhere('LOWER(articles.title) LIKE :titles', {
+        titles: `%${titleLowerCase}%`,
+      });
+    }
     if (query.author) {
       const author = await this.userRepository.findOne({
         where: { username: query.author },
