@@ -77,19 +77,24 @@ export class ProfileService {
         followerId: currentUserId,
       },
     });
+
     const followingIds = listFollowingCheck.map((follow) => follow.followingId);
 
     const notFollowingUsers = await this.userRepository
       .createQueryBuilder('users')
       .where('users.id != :currentUserId', { currentUserId })
-      .andWhere('users.id NOT IN (:...followingIds)', { followingIds })
+      .andWhere(
+        followingIds.length ? 'users.id NOT IN (:...followingIds)' : '1=1',
+        { followingIds },
+      )
       .getMany();
 
     const notFollowingUsersConfigAva = notFollowingUsers.map((user) => {
       return { ...user, avatar: BASE_URL_AVA + user.avatar };
     });
+    const userCount = notFollowingUsersConfigAva.length;
 
-    return notFollowingUsersConfigAva;
+    return { notFollowingUsersConfigAva, userCount };
   }
 
   async followProfile(
