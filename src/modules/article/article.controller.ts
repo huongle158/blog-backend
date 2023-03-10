@@ -68,13 +68,18 @@ export class ArticleController {
   @UseGuards(AuthGuard)
   async getBySlug(
     @Param('slug') slug: string,
-  ): Promise<ArticleResponseInterface> {
-    const article = await this.articlesService.findBySlug(slug);
+    @User('id') currentUserId: number,
+  ): Promise<any> {
+    const response = await this.articlesService.getDetailBySlug(
+      slug,
+      currentUserId,
+    );
 
-    const linkImg: string = BASE_URL_BANNER + article.banner;
-    article.banner = linkImg;
+    const linkImg: string = BASE_URL_BANNER + response.article.banner;
+    response.article.banner = linkImg;
 
-    return this.articlesService.buildArticleResponse(article);
+    // return this.articlesService.buildArticleResponse(article);
+    return response;
   }
 
   @Put('update/:slug')

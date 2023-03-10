@@ -223,14 +223,28 @@ export class ArticlesService {
     return article;
   }
 
-  // async getDetailBySlug(slug: string, userId: number): Promise<ArticleEntity> {
-  //   const article = await this.articleRepository.findOne({
-  //     where: { slug },
-  //   });
-  //   const configAva = BASE_URL_AVA + article.author.avatar;
-  //   article.author.avatar = configAva;
-  //   return article;
-  // }
+  async getDetailBySlug(slug: string, userId: number): Promise<any> {
+    const article = await this.articleRepository.findOne({
+      where: { slug },
+    });
+    const configAva = BASE_URL_AVA + article.author.avatar;
+    article.author.avatar = configAva;
+
+    const user = await this.userRepository.findOne({
+      where: {
+        id: userId,
+      },
+      // Tức ko lấy ra
+      relations: ['favorites'],
+    });
+    // Check coi đã like chưa
+    const articleIndex = user.favorites.findIndex(
+      (articleInFavorites) => articleInFavorites.id === article.id,
+    );
+
+    const favoriteStatus = articleIndex >= 0 ? true : false;
+    return { article: article, favoriteStatus };
+  }
 
   async deleteOldBanner(filename: string) {
     const filePath: string = join(
