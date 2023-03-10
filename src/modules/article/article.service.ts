@@ -13,6 +13,7 @@ import { CreateArticleDto } from './dto/createArticle.dto';
 import { ArticleResponseInterface } from './types/articleResponse.interface';
 import { ArticlesResponseInterface } from './types/articlesResponse.interface';
 import { UpdateArticleDto } from './dto/updateArticle.dto';
+import { FollowEntity } from '../profile/follow.entity';
 
 @Injectable()
 export class ArticlesService {
@@ -23,6 +24,8 @@ export class ArticlesService {
     private dataSource: DataSource,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(FollowEntity)
+    private readonly followRepository: Repository<FollowEntity>,
   ) {}
 
   async findAll(
@@ -88,6 +91,44 @@ export class ArticlesService {
       articles: configBannerFile,
       articlesCount,
     };
+  }
+
+  async getFeed(currentUserId: number, query: any): Promise<any> {
+    const follows = await this.followRepository.find({
+      where: { followerId: currentUserId },
+    });
+    if (follows.length === 0) return { articles: [], articlesCount: 0 };
+
+    const followingUserIds = follows.map((follow) => follow.followingId);
+    // Query
+    const queryBuider = this.dataSource
+      .getRepository(ArticleEntity)
+      .createQueryBuilder('articles')
+      .leftJoinAndSelect('articles.author', 'author')
+      .where('articles.authorId IN (:...ids)', { ids: followingUserIds });
+
+    const articlesCount = await queryBuider.getCount();
+    if (query.limit) {
+      queryBuider.limit(query.limit);
+    }
+
+    if (query.offset) {
+      queryBuider.offset(query.offset);
+    }
+    const articles = await queryBuider.getMany();
+    // Config Banner
+    const configBannerFile = articles.map((article) => {
+      const updatedAuthor = {
+        ...article.author,
+        avatar: BASE_URL_AVA + article.author.avatar,
+      };
+      return {
+        ...article,
+        author: updatedAuthor,
+        banner: BASE_URL_BANNER + article.banner,
+      };
+    });
+    return { articles: configBannerFile, articlesCount };
   }
 
   async createArticle(
