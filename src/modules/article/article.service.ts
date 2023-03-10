@@ -40,7 +40,7 @@ export class ArticlesService {
       .createQueryBuilder('articles')
       .leftJoinAndSelect('articles.author', 'author')
       .addSelect(['author.avatar']);
-    // .addSelect(`CONCAT('${BASE_URL_AVA}', author.avatar)`, 'avatar');
+
     if (query.tag) {
       const tagLowerCase = query.tag.toLowerCase();
       queryBuilder.andWhere('LOWER(articles.tagList) LIKE :tag', {
@@ -101,21 +101,42 @@ export class ArticlesService {
 
     const followingUserIds = follows.map((follow) => follow.followingId);
     // Query
-    const queryBuider = this.dataSource
+    const queryBuilder = this.dataSource
       .getRepository(ArticleEntity)
       .createQueryBuilder('articles')
       .leftJoinAndSelect('articles.author', 'author')
       .where('articles.authorId IN (:...ids)', { ids: followingUserIds });
 
-    const articlesCount = await queryBuider.getCount();
+    if (query.tag) {
+      const tagLowerCase = query.tag.toLowerCase();
+      queryBuilder.andWhere('LOWER(articles.tagList) LIKE :tag', {
+        tag: `%${tagLowerCase}%`,
+      });
+    }
+    if (query.title) {
+      const titleLowerCase = query.title.toLowerCase();
+      queryBuilder.andWhere('LOWER(articles.title) LIKE :titles', {
+        titles: `%${titleLowerCase}%`,
+      });
+    }
+    if (query.author) {
+      const author = await this.userRepository.findOne({
+        where: { username: query.author },
+      });
+      queryBuilder.andWhere('articles.authorId = :id', { id: author.id });
+    }
+
+    queryBuilder.orderBy('articles.createdAt', 'DESC');
+
+    const articlesCount = await queryBuilder.getCount();
     if (query.limit) {
-      queryBuider.limit(query.limit);
+      queryBuilder.limit(query.limit);
     }
 
     if (query.offset) {
-      queryBuider.offset(query.offset);
+      queryBuilder.offset(query.offset);
     }
-    const articles = await queryBuider.getMany();
+    const articles = await queryBuilder.getMany();
     // Config Banner
     const configBannerFile = articles.map((article) => {
       const updatedAuthor = {

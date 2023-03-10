@@ -6,9 +6,12 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { AuthGuard } from './guards/auth.guard';
 import { ArticleEntity } from '@app/modules/article/article.entity';
+import { CommentEntity } from '../comment/comment.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity, ArticleEntity])],
+  imports: [
+    TypeOrmModule.forFeature([UserEntity, ArticleEntity, CommentEntity]),
+  ],
   controllers: [UserController],
   providers: [UserService, AuthGuard],
   exports: [UserService],

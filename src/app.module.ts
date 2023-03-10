@@ -11,6 +11,7 @@ import { UserModule } from '@app/modules/user/user.module';
 import { AuthMiddleware } from '@app/modules/user/middlewares/auth.middleware';
 import { ArticleModule } from '@app/modules/article/article.module';
 import { ProfileModule } from './modules/profile/profile.module';
+import { CommentModule } from './modules/comment/comment.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ProfileModule } from './modules/profile/profile.module';
     UserModule,
     ArticleModule,
     ProfileModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
