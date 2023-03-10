@@ -34,5 +34,5 @@ export class CommentEntity {
   @ManyToOne(() => ArticleEntity, (article) => article.commentList, {
     eager: true,
   })
-  articleRoot: UserEntity;
+  articleRoot: ArticleEntity;
 }
