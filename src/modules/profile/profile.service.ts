@@ -35,7 +35,6 @@ export class ProfileService {
         followingId: user.id,
       },
     });
-    // console.log("This's ~ followStatus", followStatus);
 
     //  Người đang follow user này
     const listFollowerCheck = await this.followRepository.find({

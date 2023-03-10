@@ -153,6 +153,59 @@ export class ArticlesService {
     return this.articleRepository.save(article);
   }
 
+  async addArticleToFavorites(
+    slug: string,
+    userId: number,
+  ): Promise<ArticleEntity> {
+    const article = await this.findBySlug(slug);
+    const user = await this.userRepository.findOne({
+      where: {
+        id: userId,
+      },
+      // KO lấy ra
+      relations: ['favorites'],
+    });
+    // Check coi đã tym chưa
+    const isNotFavorited =
+      user.favorites.findIndex(
+        (articleInFavorites) => articleInFavorites.id === article.id,
+      ) === -1;
+
+    if (isNotFavorited) {
+      user.favorites.push(article);
+      article.favoritesCount++;
+      await this.userRepository.save(user);
+      await this.articleRepository.save(article);
+    }
+    return article;
+  }
+
+  // Check coi getDetail vs getList có trả udng19 favorite count
+  async deleteArticleFromFavorites(
+    slug: string,
+    userId: number,
+  ): Promise<ArticleEntity> {
+    const article = await this.findBySlug(slug);
+    const user = await this.userRepository.findOne({
+      where: {
+        id: userId,
+      },
+      // Tức ko lấy ra
+      relations: ['favorites'],
+    });
+    // Check coi đã like chưa
+    const articleIndex = user.favorites.findIndex(
+      (articleInFavorites) => articleInFavorites.id === article.id,
+    );
+    if (articleIndex >= 0) {
+      user.favorites.splice(articleIndex, 1);
+      article.favoritesCount--;
+      await this.userRepository.save(user);
+      await this.articleRepository.save(article);
+    }
+    return article;
+  }
+
   private getSlug(title: string): string {
     return (
       slugify(title, { lower: true }) +
@@ -169,6 +222,15 @@ export class ArticlesService {
     article.author.avatar = configAva;
     return article;
   }
+
+  // async getDetailBySlug(slug: string, userId: number): Promise<ArticleEntity> {
+  //   const article = await this.articleRepository.findOne({
+  //     where: { slug },
+  //   });
+  //   const configAva = BASE_URL_AVA + article.author.avatar;
+  //   article.author.avatar = configAva;
+  //   return article;
+  // }
 
   async deleteOldBanner(filename: string) {
     const filePath: string = join(

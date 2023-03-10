@@ -113,4 +113,30 @@ export class ArticleController {
   ) {
     return await this.articlesService.deleteArticle(slug, currentUserId);
   }
+
+  @Post(':slug/favorite')
+  @UseGuards(AuthGuard)
+  async addArticleToFavorites(
+    @User('id') currentUserId: number,
+    @Param('slug') slug: string,
+  ): Promise<ArticleResponseInterface> {
+    const articles = await this.articlesService.addArticleToFavorites(
+      slug,
+      currentUserId,
+    );
+    return this.articlesService.buildArticleResponse(articles);
+  }
+
+  @Delete(':slug/unfavorite')
+  @UseGuards(AuthGuard)
+  async deleteArticleFromFavorites(
+    @User('id') currentUserId: number,
+    @Param('slug') slug: string,
+  ): Promise<ArticleResponseInterface> {
+    const article = await this.articlesService.deleteArticleFromFavorites(
+      slug,
+      currentUserId,
+    );
+    return this.articlesService.buildArticleResponse(article);
+  }
 }
