@@ -34,7 +34,6 @@ export class ArticleController {
   constructor(
     private readonly articlesService: ArticlesService,
     private readonly notificationService: NotificationService,
-    private readonly userService: UserService,
   ) { }
 
   @Get()
@@ -144,11 +143,9 @@ export class ArticleController {
       slug,
       currentUserId,
     );
-    const user = await this.userService.findById(currentUserId)
-    const article = await this.articlesService.findBySlug(slug);
 
     const message = ' đã thích bài viết '
-    await this.notificationService.createNotification(article, user, message)
+    await this.notificationService.createNotification(slug, currentUserId, message)
     
     return this.articlesService.buildArticleResponse(articles);
   }

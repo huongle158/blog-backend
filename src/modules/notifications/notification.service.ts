@@ -1,22 +1,27 @@
-import { ArticleEntity } from '@app/modules/article/article.entity';
 import { NotificationEntity } from './notification.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserEntity } from '../user/user.entity';
+import { ArticlesService } from '../article/article.service';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class NotificationService {
     constructor(
         @InjectRepository(NotificationEntity)
         private readonly notificationRepository: Repository<NotificationEntity>,
+        private readonly articlesService: ArticlesService,
+        private readonly userService: UserService,
     ) { }
     
     async createNotification(
-        article: ArticleEntity,
-        user: UserEntity,
+        slug: string,
+        userId: number,
         message: string,
     ): Promise<NotificationEntity> {
+        const user = await this.userService.findById(userId)
+        const article = await this.articlesService.findBySlug(slug);
+
         const notification = {
             author: article.author,
             article: article,
