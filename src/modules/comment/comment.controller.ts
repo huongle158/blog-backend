@@ -48,9 +48,26 @@ export class CommentController {
     return this.commentService.buildCommentResponse(comment);
   }
 
+  @Put('update/:slug/:commentId')
+  @UseGuards(AuthGuard)
+  @UsePipes(new ValidationPipe())
+  async updateComment(
+    @User() currentUser: UserEntity,
+    @Param('slug') slug: string,
+    @Param('commentId', ParseIntPipe) commentId: number,
+    @Body() updateCommentDto: CreateCommentDto,
+  ) {
+    return await this.commentService.updateComment(
+      slug,
+      currentUser,
+      commentId,
+      updateCommentDto,
+    );
+  }
+
   @Delete('delete/:slug/:commentId')
   @UseGuards(AuthGuard)
-  async delteComment(
+  async deleteComment(
     @User() currentUser: UserEntity,
     @Param('slug') slug: string,
     @Param('commentId', ParseIntPipe) commentId: number,

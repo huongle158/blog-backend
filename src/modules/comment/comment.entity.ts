@@ -17,6 +17,9 @@ export class CommentEntity {
   @Column({ default: '' })
   content: string;
 
+  @Column({ default: 0 })
+  favoritesLike: number;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 

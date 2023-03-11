@@ -74,6 +74,35 @@ export class CommentService {
     return await this.commentRepository.save(comment);
   }
 
+  async updateComment(
+    slug: string,
+    currentUser: UserEntity,
+    commentId: number,
+    updateCommentDto: CreateCommentDto,
+  ): Promise<CommentEntity> {
+    const article = await this.articleRepository.findOne({
+      where: { slug },
+    });
+    if (!article) {
+      throw new HttpException('Article does not exist', HttpStatus.NOT_FOUND);
+    }
+
+    const comment = await this.commentRepository.findOne({
+      where: { id: commentId },
+    });
+    if (!comment) {
+      throw new HttpException('Comment does not exist', HttpStatus.NOT_FOUND);
+    }
+    if (currentUser.id !== comment.authorComment.id) {
+      throw new HttpException(
+        'Users do not have permission to update ',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+    Object.assign(comment, updateCommentDto);
+    return this.commentRepository.save(comment);
+  }
+
   async deleteComment(
     slug: string,
     currentUser: UserEntity,
