@@ -1,3 +1,4 @@
+import { UserService } from './../user/user.service';
 import {
   Controller,
   Post,
@@ -26,10 +27,15 @@ import { ArticlesResponseInterface } from './types/articlesResponse.interface';
 import { BASE_URL_BANNER } from '@app/config/common';
 import { ArticleResponseInterface } from './types/articleResponse.interface';
 import { UpdateArticleDto } from './dto/updateArticle.dto';
+import { NotificationService } from '../notifications/notification.service';
 
 @Controller('articles')
 export class ArticleController {
-  constructor(private readonly articlesService: ArticlesService) {}
+  constructor(
+    private readonly articlesService: ArticlesService,
+    private readonly notificationService: NotificationService,
+    private readonly userService: UserService,
+  ) { }
 
   @Get()
   @UseGuards(AuthGuard)
@@ -138,6 +144,12 @@ export class ArticleController {
       slug,
       currentUserId,
     );
+    const user = await this.userService.findById(currentUserId)
+    const article = await this.articlesService.findBySlug(slug);
+
+    const message = ' đã thích bài viết '
+    await this.notificationService.createNotification(article, user, message)
+    
     return this.articlesService.buildArticleResponse(articles);
   }
 

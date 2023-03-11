@@ -10,6 +10,7 @@ import { Type, Transform } from 'class-transformer';
 
 import { UserEntity } from '../user/user.entity';
 import { CommentEntity } from '../comment/comment.entity';
+import { NotificationEntity } from '../notifications/notification.entity';
 
 @Entity({ name: 'articles' })
 export class ArticleEntity {
@@ -53,4 +54,7 @@ export class ArticleEntity {
 
   @OneToMany(() => CommentEntity, (comment) => comment.articleRoot)
   commentList: CommentEntity[];
+
+  @OneToMany(() => NotificationEntity, (notification) => notification.article)
+  notifications: NotificationEntity[]
 }

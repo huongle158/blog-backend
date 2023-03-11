@@ -10,6 +10,7 @@ import {
 import { hash } from 'bcrypt';
 import { ArticleEntity } from '../article/article.entity';
 import { CommentEntity } from '../comment/comment.entity';
+import { NotificationEntity } from '../notifications/notification.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -51,4 +52,7 @@ export class UserEntity {
   @ManyToMany(() => ArticleEntity)
   @JoinTable()
   favorites: ArticleEntity[];
+
+  @OneToMany(() => NotificationEntity, notification => notification.author)
+  notifications: NotificationEntity[];
 }
