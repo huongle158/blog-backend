@@ -1,5 +1,5 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '../user/guards/auth.guard';
+import AuthGuard from '../user/guards/auth.guard';
 import { NotificationService } from './notification.service';
 
 @Controller('notifications')

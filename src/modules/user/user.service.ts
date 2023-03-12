@@ -15,15 +15,13 @@ import { LoginUserDto } from './dto/loginUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { BASE_URL_AVA } from '@app/config/common';
 import { SimpleUserResponseInterface } from './types/simpleUserResponse.interface';
-import { RevokeTokenEntity } from './revoketoken.entity';
+// import { RevokeTokenEntity } from './revoketoken.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
-    @InjectRepository(RevokeTokenEntity)
-    private readonly revokeTokenRepository: Repository<RevokeTokenEntity>,
+    private readonly userRepository: Repository<UserEntity>, // @InjectRepository(RevokeTokenEntity) // private readonly revokeTokenRepository: Repository<RevokeTokenEntity>,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
@@ -156,13 +154,13 @@ export class UserService {
     );
   }
 
-  async logout(token: string): Promise<void> {
-    const decodedToken = decode(token);
-    const revokeToken = new RevokeTokenEntity();
-    revokeToken.token = token;
-    revokeToken.expiresAt = new Date(decodedToken.exp * 1000);
-    await this.revokeTokenRepository.save(revokeToken);
-  }
+  // async logout(token: string): Promise<void> {
+  //   const decodedToken = decode(token);
+  //   const revokeToken = new RevokeTokenEntity();
+  //   revokeToken.token = token;
+  //   revokeToken.expiresAt = new Date(decodedToken.exp * 1000);
+  //   await this.revokeTokenRepository.save(revokeToken);
+  // }
 
   buildUserResponse(user: UserEntity): SimpleUserResponseInterface {
     return {

@@ -61,8 +61,10 @@ export class ProfileService {
     const followingUsersConfigAva = followingUsers.map((user) => {
       return { ...user, avatar: BASE_URL_AVA + user.avatar };
     });
+
     return {
       ...user,
+      avatar: BASE_URL_AVA + user.avatar,
       //   following: Boolean(followStatus),
       following: followStatus !== null ? true : false,
       listFollower: followerUsersConfigAva,
