@@ -8,7 +8,7 @@ export class NotificationEntity {
     id: number;
 
     @ManyToOne(() => UserEntity, user => user.notifications)
-    author: UserEntity;
+    user: UserEntity;
 
     @Column()
     message: string;

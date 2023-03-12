@@ -23,7 +23,7 @@ export class NotificationService {
         const article = await this.articlesService.findBySlug(slug);
 
         const notification = {
-            author: article.author,
+            user: user,
             article: article,
             message: user.fullname + message + article.title,
         }
@@ -32,8 +32,8 @@ export class NotificationService {
 
     async getNotifications(userId: number): Promise<NotificationEntity[]> {
         const notifications = await this.notificationRepository.find({
-            where: { author: { id: userId } },
-            relations: ['author', 'article'],
+            where: { article: {author: { id: userId }} },
+            relations: ['user', 'article'],
             order: { createdAt: 'DESC' },
         });
         return notifications;

@@ -53,6 +53,6 @@ export class UserEntity {
   @JoinTable()
   favorites: ArticleEntity[];
 
-  @OneToMany(() => NotificationEntity, notification => notification.author)
+  @OneToMany(() => NotificationEntity, notification => notification.user)
   notifications: NotificationEntity[];
 }
