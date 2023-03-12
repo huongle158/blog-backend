@@ -9,20 +9,27 @@ import {
   Put,
   UseInterceptors,
   UploadedFile,
+  Delete,
+  Req,
+  BadGatewayException,
 } from '@nestjs/common';
 import * as multer from 'multer';
+import { IncomingHttpHeaders } from 'http';
 import { FileInterceptor } from '@nestjs/platform-express';
-
+// import { AuthGuard } from '@nestjs/passport';
+import { Request } from '@nestjs/common';
+import CustomAuthGuard from '@app/modules/user/guards/auth.guard';
 import { User } from './decorators/user.decorator';
 import { diskStoConfig } from '@app/config/diskStorage';
 import { CreateUserDto } from './dto/createUser.dto';
 import { LoginUserDto } from './dto/loginUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
-import { AuthGuard } from './guards/auth.guard';
 import { UserResponseInterface } from './types/userResponse.interface';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 import { BASE_URL_AVA } from '@app/config/common';
+import { SimpleUserResponseInterface } from './types/simpleUserResponse.interface';
+import { LogoutMiddleware } from './middlewares/logout.middleware';
 
 @Controller('users')
 export class UserController {
@@ -34,7 +41,7 @@ export class UserController {
     @Body('user') createUserDto: CreateUserDto,
   ): Promise<UserResponseInterface> {
     const user = await this.userService.createUser(createUserDto);
-    return this.userService.buildUserResponse(user);
+    return this.userService.buildUserToken(user);
   }
 
   // @Post('users/login')
@@ -46,40 +53,58 @@ export class UserController {
     const user = await this.userService.login(loginDto);
     // const linkImg: string = BASE_URL_AVA + user.avatar;
     // user.avatar = linkImg;
-    return this.userService.buildUserResponse(user);
+    return this.userService.buildUserToken(user);
   }
 
   @Get()
-  @UseGuards(AuthGuard)
+  @UseGuards(CustomAuthGuard)
   async currentUser(
     // @Req() request: ExpressRequest,
     @User() user: UserEntity,
-  ): Promise<UserResponseInterface> {
-    console.log("This's ~ user", user);
+  ): Promise<SimpleUserResponseInterface> {
     // const linkImg: string = BASE_URL_AVA + user.avatar;
     // user.avatar = linkImg;
     return this.userService.buildUserResponse(user);
   }
 
   @Put()
-  @UseGuards(AuthGuard)
+  @UseGuards(CustomAuthGuard)
   @UsePipes(new ValidationPipe())
   async updateCurrentUser(
     @User('id') currentUserId: number,
     @Body('user') updateUserDto: UpdateUserDto,
-  ): Promise<UserResponseInterface> {
+  ): Promise<SimpleUserResponseInterface> {
     console.log("This's ~ updateUserDto update", updateUserDto);
     const user = await this.userService.updateUser(
       currentUserId,
       updateUserDto,
     );
-    console.log("This's ~ user update", user);
 
     return this.userService.buildUserResponse(user);
   }
 
+  @Post('/logout')
+  @UseGuards(CustomAuthGuard)
+  async logout(@Req() req) {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    await new LogoutMiddleware(this.userService).use(req, null, () => {});
+    return { message: 'Logout successfully' };
+  }
+
+  // @Post('logout')
+  // @UseGuards(AuthGuard('jwt'))
+  // async logout(@Req() req: Request) {
+  //   const authorization = req.headers['authorization'];
+  //   if (!authorization || !authorization.startsWith('Bearer ')) {
+  //     throw new BadGatewayException('Invalid authorization header');
+  //   }
+  //   const token = authorization.split(' ')[1];
+  //   await this.userService.logout(token);
+  //   return { message: 'Logged out successfully' };
+  // }
+
   @Put('avatar')
-  @UseGuards(AuthGuard)
+  @UseGuards(CustomAuthGuard)
   @UsePipes(new ValidationPipe())
   @UseInterceptors(
     FileInterceptor('avatar', {
@@ -89,12 +114,11 @@ export class UserController {
   async updateAvatar(
     @User('id') currentUserId: number,
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<UserResponseInterface> {
+  ): Promise<SimpleUserResponseInterface> {
     const user = await this.userService.updateAvatar(
       currentUserId,
       file.filename,
     );
-    console.log("This's ~ user upload", user);
     // const linkImg: string = BASE_URL_AVA + user.avatar;
     // user.avatar = linkImg;
     return this.userService.buildUserResponse(user);

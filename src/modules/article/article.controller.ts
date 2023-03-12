@@ -17,7 +17,7 @@ import * as multer from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { diskBannerConfig } from '@app/config/diskStorage';
-import { AuthGuard } from '@app/modules/user/guards/auth.guard';
+import AuthGuard from '@app/modules/user/guards/auth.guard';
 import { ArticlesService } from './article.service';
 import { User } from '../user/decorators/user.decorator';
 import { UserEntity } from '../user/user.entity';

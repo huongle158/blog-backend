@@ -15,7 +15,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 
-import { AuthGuard } from '@app/modules/user/guards/auth.guard';
+import AuthGuard from '@app/modules/user/guards/auth.guard';
 import { CommentService } from './comment.service';
 import { UserEntity } from '../user/user.entity';
 import { User } from '../user/decorators/user.decorator';

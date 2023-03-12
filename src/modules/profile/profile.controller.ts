@@ -12,7 +12,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { User } from '../user/decorators/user.decorator';
-import { AuthGuard } from '../user/guards/auth.guard';
+import AuthGuard from '../user/guards/auth.guard';
 import { ProfileService } from './profile.service';
 import { ProfileResponseInterface } from './types/profileResponse.interface';
 

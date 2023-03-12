@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { sign } from 'jsonwebtoken';
+import { sign, decode } from 'jsonwebtoken';
 import { compare } from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { join } from 'path';
@@ -14,12 +14,16 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { LoginUserDto } from './dto/loginUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { BASE_URL_AVA } from '@app/config/common';
+import { SimpleUserResponseInterface } from './types/simpleUserResponse.interface';
+import { RevokeTokenEntity } from './revoketoken.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(RevokeTokenEntity)
+    private readonly revokeTokenRepository: Repository<RevokeTokenEntity>,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
@@ -152,7 +156,25 @@ export class UserService {
     );
   }
 
-  buildUserResponse(user: UserEntity): UserResponseInterface {
+  async logout(token: string): Promise<void> {
+    const decodedToken = decode(token);
+    const revokeToken = new RevokeTokenEntity();
+    revokeToken.token = token;
+    revokeToken.expiresAt = new Date(decodedToken.exp * 1000);
+    await this.revokeTokenRepository.save(revokeToken);
+  }
+
+  buildUserResponse(user: UserEntity): SimpleUserResponseInterface {
+    return {
+      user: {
+        ...user,
+        avatar: BASE_URL_AVA + user.avatar,
+        // token: this.generateJwt(user),
+      },
+    };
+  }
+
+  buildUserToken(user: UserEntity): UserResponseInterface {
     return {
       user: {
         ...user,
