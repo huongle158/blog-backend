@@ -21,10 +21,14 @@ import { UserEntity } from '../user/user.entity';
 import { User } from '../user/decorators/user.decorator';
 import { CreateCommentDto } from './dto/createComment.dto';
 import { CommentResponseInterface } from './types/commentResponse.interface';
+import { NotificationService } from '../notifications/notification.service';
 
 @Controller('comments')
 export class CommentController {
-  constructor(private readonly commentService: CommentService) {}
+  constructor(
+    private readonly commentService: CommentService,
+    private readonly notificationService: NotificationService,
+  ) {}
 
   @Get('list/:slug')
   async getListComment(@Param('slug') slug: string): Promise<any> {
@@ -43,6 +47,12 @@ export class CommentController {
       slug,
       currentUser,
       createCommentDto,
+    );
+    const message = ' đã bình luận bài viết ';
+    await this.notificationService.createNotification(
+      slug,
+      currentUser.id,
+      message,
     );
 
     return this.commentService.buildCommentResponse(comment);

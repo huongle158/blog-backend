@@ -1,3 +1,5 @@
+import { NotificationModule } from './../notifications/notification.module';
+import { NotificationEntity } from './../notifications/notification.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -9,6 +11,7 @@ import { ArticlesService } from './article.service';
 import { TagEntity } from '../tag/tag.entity';
 import { FollowEntity } from '../profile/follow.entity';
 import { CommentEntity } from '../comment/comment.entity';
+import { UserService } from '../user/user.service';
 
 @Module({
   imports: [
@@ -18,9 +21,12 @@ import { CommentEntity } from '../comment/comment.entity';
       TagEntity,
       FollowEntity,
       CommentEntity,
+      NotificationEntity,
     ]),
+    NotificationModule,
   ],
   controllers: [ArticleController],
-  providers: [ArticlesService],
+  providers: [ArticlesService, UserService],
+  exports: [ArticlesService],
 })
 export class ArticleModule {}

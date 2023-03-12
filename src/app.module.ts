@@ -12,6 +12,7 @@ import { AuthMiddleware } from '@app/modules/user/middlewares/auth.middleware';
 import { ArticleModule } from '@app/modules/article/article.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { CommentModule } from './modules/comment/comment.module';
+import { NotificationModule } from './modules/notifications/notification.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { CommentModule } from './modules/comment/comment.module';
     ArticleModule,
     ProfileModule,
     CommentModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

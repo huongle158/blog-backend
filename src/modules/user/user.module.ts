@@ -7,7 +7,7 @@ import { UserService } from './user.service';
 import AuthGuard from './guards/auth.guard';
 import { ArticleEntity } from '@app/modules/article/article.entity';
 import { CommentEntity } from '../comment/comment.entity';
-import { RevokeTokenEntity } from './revoketoken.entity';
+import { NotificationEntity } from '../notifications/notification.entity';
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import { RevokeTokenEntity } from './revoketoken.entity';
       UserEntity,
       ArticleEntity,
       CommentEntity,
-      RevokeTokenEntity,
+      NotificationEntity,
     ]),
   ],
   controllers: [UserController],
