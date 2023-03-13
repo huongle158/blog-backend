@@ -33,7 +33,7 @@ import { NotificationService } from '../notifications/notification.service';
 export class ArticleController {
   constructor(
     private readonly articlesService: ArticlesService,
-    private readonly notificationService: NotificationService,
+    // private readonly notificationService: NotificationService,
   ) {}
 
   @Get()
@@ -144,12 +144,12 @@ export class ArticleController {
       currentUserId,
     );
 
-    const message = ' đã thích bài viết ';
-    await this.notificationService.createNotification(
-      slug,
-      currentUserId,
-      message,
-    );
+    // const message = ' đã thích bài viết ';
+    // await this.notificationService.createNotification(
+    //   slug,
+    //   currentUserId,
+    //   message,
+    // );
 
     return this.articlesService.buildArticleResponse(articles);
   }

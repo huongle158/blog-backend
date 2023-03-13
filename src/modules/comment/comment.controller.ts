@@ -27,7 +27,7 @@ import { NotificationService } from '../notifications/notification.service';
 export class CommentController {
   constructor(
     private readonly commentService: CommentService,
-    private readonly notificationService: NotificationService,
+    // private readonly notificationService: NotificationService,
   ) {}
 
   @Get('list/:slug')
@@ -48,12 +48,12 @@ export class CommentController {
       currentUser,
       createCommentDto,
     );
-    const message = ' đã bình luận bài viết ';
-    await this.notificationService.createNotification(
-      slug,
-      currentUser.id,
-      message,
-    );
+    // const message = ' đã bình luận bài viết ';
+    // await this.notificationService.createNotification(
+    //   slug,
+    //   currentUser.id,
+    //   message,
+    // );
 
     return this.commentService.buildCommentResponse(comment);
   }
