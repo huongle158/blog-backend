@@ -33,7 +33,7 @@ import { NotificationService } from '../notifications/notification.service';
 export class ArticleController {
   constructor(
     private readonly articlesService: ArticlesService,
-    private readonly notificationService: NotificationService,
+    // private readonly notificationService: NotificationService,
   ) {}
 
   @Get()

@@ -27,7 +27,7 @@ import { NotificationService } from '../notifications/notification.service';
 export class CommentController {
   constructor(
     private readonly commentService: CommentService,
-    private readonly notificationService: NotificationService,
+    // private readonly notificationService: NotificationService,
   ) {}
 
   @Get('list/:slug')

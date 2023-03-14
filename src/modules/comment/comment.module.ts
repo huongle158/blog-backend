@@ -11,7 +11,7 @@ import { CommentService } from './comment.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([CommentEntity, ArticleEntity, UserEntity]),
-    forwardRef(() => NotificationModule),
+    // forwardRef(() => NotificationModule),
   ],
   controllers: [CommentController],
   providers: [CommentService],
