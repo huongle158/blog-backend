@@ -26,9 +26,8 @@ import { NotificationService } from '../notifications/notification.service';
 @Controller('comments')
 export class CommentController {
   constructor(
-    private readonly commentService: CommentService,
-  ) // private readonly notificationService: NotificationService,
-  {}
+    private readonly commentService: CommentService, // private readonly notificationService: NotificationService,
+  ) {}
 
   @Get('list/:slug')
   async getListComment(@Param('slug') slug: string): Promise<any> {

@@ -32,9 +32,8 @@ import { NotificationService } from '../notifications/notification.service';
 @Controller('articles')
 export class ArticleController {
   constructor(
-    private readonly articlesService: ArticlesService,
-  ) // private readonly notificationService: NotificationService,
-  {}
+    private readonly articlesService: ArticlesService, // private readonly notificationService: NotificationService,
+  ) {}
 
   @Get()
   @UseGuards(AuthGuard)
