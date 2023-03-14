@@ -98,8 +98,11 @@ export class ArticlesService {
       where: { followerId: currentUserId },
     });
     if (follows.length === 0) return { articles: [], articlesCount: 0 };
+    // TODO bổ sung bài viết của mình bằng cách push thêm vào array currentUserID của mình
 
     const followingUserIds = follows.map((follow) => follow.followingId);
+    followingUserIds.push(currentUserId);
+
     // Query
     const queryBuilder = this.dataSource
       .getRepository(ArticleEntity)

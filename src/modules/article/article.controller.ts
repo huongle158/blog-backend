@@ -144,12 +144,12 @@ export class ArticleController {
       currentUserId,
     );
 
-    const message = ' đã thích bài viết ';
-    await this.notificationService.createNotification(
-      slug,
-      currentUserId,
-      message,
-    );
+    // const message = ' đã thích bài viết ';
+    // await this.notificationService.createNotification(
+    //   slug,
+    //   currentUserId,
+    //   message,
+    // );
 
     return this.articlesService.buildArticleResponse(articles);
   }

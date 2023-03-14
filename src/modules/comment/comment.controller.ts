@@ -48,12 +48,12 @@ export class CommentController {
       currentUser,
       createCommentDto,
     );
-    const message = ' đã bình luận bài viết ';
-    await this.notificationService.createNotification(
-      slug,
-      currentUser.id,
-      message,
-    );
+    // const message = ' đã bình luận bài viết ';
+    // await this.notificationService.createNotification(
+    //   slug,
+    //   currentUser.id,
+    //   message,
+    // );
 
     return this.commentService.buildCommentResponse(comment);
   }
